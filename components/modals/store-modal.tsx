@@ -5,6 +5,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import { auth } from "@/app/firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getIdToken } from 'firebase/auth';
@@ -55,16 +56,16 @@ export const StoreModal = () => {
             Authorization: `Bearer ${await getIdToken(user)}`,
           },
         });
-        console.log(response.data);
+        
+        toast.success("Store created.");
         }
       } catch (error) {
         console.error(error);
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong.");
     } finally {
       setFormLoading(false);
-      storeModal.onClose();
     }
   }
 
