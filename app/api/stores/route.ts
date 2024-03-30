@@ -1,22 +1,20 @@
 import { NextResponse } from "next/server";
-import { verifyUser } from "@/app/middleware";
+import { auth } from "@clerk/nextjs";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"; 
-import { db } from "@/app/firebaseConfig";
+import { db } from "@/lib/firebase/firebase-config";
 
 export async function POST(
   req: Request,
 ) {
   try {
-    const session = await verifyUser(req); 
-    const { uid } = session; 
+    const { userId } = auth(); 
+    const body = await req.json();
 
-    if (!uid) {
+    const { name } = body;
+
+    if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
-    // Get the request body
-    const body = await req.json();
-    const { name } = body;
 
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
@@ -25,7 +23,7 @@ export async function POST(
     // Store the store in the database
     const store = await addDoc(collection(db, "stores"), {
       name: name,
-      userId: uid,
+      userId: userId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });

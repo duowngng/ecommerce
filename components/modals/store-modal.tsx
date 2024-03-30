@@ -6,9 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { auth } from "@/app/firebaseConfig";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { getIdToken } from 'firebase/auth';
 
 import { useStoreModal } from "@/hooks/use-store-modal";
 import { Modal } from "@/components/ui/modal";
@@ -30,11 +27,9 @@ const formSchema = z.object({
 });
 
 export const StoreModal = () => {
-  const [user] = useAuthState(auth);
-
   const storeModal = useStoreModal();
 
-  const [ formLoading, setFormLoading ] = useState(false);
+  const [ loading, setLoading ] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,27 +40,15 @@ export const StoreModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setFormLoading(true);
+      setLoading(true);
 
-      try {
-        if (!user) {
-          throw new Error("Unauthorized");
-        } else {
-        const response = await axios.post("/api/stores", values, {
-          headers: {
-            Authorization: `Bearer ${await getIdToken(user)}`,
-          },
-        });
-        
-        toast.success("Store created.");
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await axios.post("/api/stores", values);
+      
+      toast.success("Store created.");
     } catch (error) {
       toast.error("Something went wrong.");
     } finally {
-      setFormLoading(false);
+      setLoading(false);
     }
   }
 
@@ -88,7 +71,7 @@ export const StoreModal = () => {
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input 
-                    disabled={formLoading}
+                    disabled={loading}
                     placeholder="E-Commerce" {...field} />
                   </FormControl>
                   <FormMessage />
@@ -97,13 +80,13 @@ export const StoreModal = () => {
             />
             <div className="pt-6 space-x-2 flex items-center justify-end">
               <Button 
-                disabled={formLoading}
+                disabled={loading}
                 variant="outline"
                 onClick={storeModal.onClose}
               >
                 Cancel
                 </Button>
-              <Button disabled={formLoading} type="submit">Continue</Button>
+              <Button disabled={loading} type="submit">Continue</Button>
             </div>
             </form>
           </Form>

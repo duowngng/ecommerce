@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ClerkProvider } from '@clerk/nextjs'
 
-import SignIn from "@/app/(auth)/(routes)/sign-in/page";
-import Home from "@/app/(root)/page";
-import { Auth } from "firebase-admin/auth";
 import { ModalProvider } from "@/providers/modal-provider";
 import { ToastProvider } from "@/providers/toast-provider";
 
@@ -22,12 +20,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <ToastProvider />
-        <ModalProvider />
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <ToastProvider />
+          <ModalProvider />
           {children}
-      </body>
-    </html>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
