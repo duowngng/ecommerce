@@ -1,34 +1,34 @@
-import { auth, db } from "@/lib/firebase/firebase-config";
-import { collection, doc } from "firebase/firestore";
+import { auth } from "@clerk/nextjs";
+import { db } from "@/lib/firebase/firebase-config";
+import { doc, getDoc } from "firebase/firestore";
 import { redirect } from "next/navigation";
-import { useAuthState } from "react-firebase-hooks/auth";
 
-export default function DashboardLayout({
+
+export default async function DashboardLayout({
   children,
   params
 }: {
   children: React.ReactNode;
   params: { storeId: string }
 })  {
-  const [ user, loading ] = useAuthState(auth);
+  const { userId } = auth();
   
-  
-  if (!user && !loading) {
+  if (!userId) {
     redirect("/sign-in");
   }
 
-  const storeRef = doc(collection(db, 'stores'), params.storeId);
+  const docRef = doc(db, 'stores', params.storeId);
+  const storeDoc = await getDoc(docRef);
 
-  if (!storeRef) {
+  if (!storeDoc.exists() || storeDoc.data().userId !== userId) {
     redirect("/");
   }
 
-  if (user) {
-    return (
-      <>
-        <div>This is navbar</div>
-        {children}
-      </>
-    );
-  }
+  return (
+    <>
+      <div>This is navbar</div>
+      {children}
+    </>
+  );
+
 }

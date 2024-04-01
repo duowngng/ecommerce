@@ -34,10 +34,11 @@ export default function Home() {
   }, [isOpen, onOpen]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
-      <UserButton afterSignOutUrl="/"/>
-      Root page
-      <SignOutButton />
-    </main>
+    // <main className="flex min-h-screen flex-col items-center">
+    //   <UserButton afterSignOutUrl="/"/>
+    //   Root page
+    //   <SignOutButton />
+    // </main>
+    null
   );
 }
