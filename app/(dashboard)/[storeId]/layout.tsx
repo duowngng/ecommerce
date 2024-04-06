@@ -3,6 +3,8 @@ import { db } from "@/lib/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 import { redirect } from "next/navigation";
 
+import Navbar from "@/components/navbar";
+
 
 export default async function DashboardLayout({
   children,
@@ -26,7 +28,7 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <div>This is navbar</div>
+      <Navbar />
       {children}
     </>
   );

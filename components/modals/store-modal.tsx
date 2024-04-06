@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+
 const formSchema = z.object({
   name: z.string().min(1, { 
     message: "Name is required" 
@@ -44,7 +45,7 @@ export const StoreModal = () => {
 
       const response = await axios.post("/api/stores", values);
       
-      window.location.assign(`/${response.data.id}`);
+      window.location.assign(`/${response.data._key.path.segments[1]}`);
     } catch (error) {
       toast.error("Something went wrong.");
     } finally {

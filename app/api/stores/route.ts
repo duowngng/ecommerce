@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore"; 
+import { collection, addDoc, serverTimestamp, getDoc } from "firebase/firestore"; 
 import { db } from "@/lib/firebase/firebase-config";
 
 export async function POST(
@@ -13,7 +13,7 @@ export async function POST(
     const { name } = body;
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthenticated", { status: 401 });
     }
 
     if (!name) {
@@ -21,16 +21,16 @@ export async function POST(
     }
 
     // Store the store in the database
-    const store = await addDoc(collection(db, "stores"), {
+    const storeRef = await addDoc(collection(db, "stores"), {
       name: name,
       userId: userId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
     // Return the response
-    return NextResponse.json(store);
+    return NextResponse.json(storeRef);
   } catch (error) {
-    console.log('[STORE_POST]', error);
+    console.log('[STORES_POST]', error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
