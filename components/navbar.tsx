@@ -5,7 +5,7 @@ import StoreSwitcher from "@/components/store-switcher";
 import { redirect } from "next/navigation";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase-config";
-import { Store } from "@/types/store";
+import { Store } from "@/types/types";
 const Navbar = async () => {
   const { userId } = auth();
 

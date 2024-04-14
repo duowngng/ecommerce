@@ -5,7 +5,7 @@ import { db } from "@/lib/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 
 import { SettingsForm } from "./components/settings-form";
-import { Store } from "@/types/store";
+import { Store } from "@/types/types";
 
 interface SettingPageProps {
   params: {

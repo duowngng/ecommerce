@@ -16,7 +16,7 @@ import {
   CommandSeparator} from "@/components/ui/command";
 import { useStoreModal } from "@/hooks/use-store-modal";
 import { cn } from "@/lib/utils";
-import { Store } from "@/types/store";
+import { Store } from "@/types/types";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
