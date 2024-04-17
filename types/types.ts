@@ -13,3 +13,11 @@ export interface Billboard {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Category {
+  id: string;
+  name: string;
+  billboardId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

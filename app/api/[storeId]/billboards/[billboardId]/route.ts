@@ -91,10 +91,12 @@ export async function DELETE (
       return new NextResponse("Billboard id is required", { status: 400 });
     }
 
+    const storeRef = doc(db, 'stores', params.storeId);
+    const storeDoc = await getDoc(storeRef);
     const billboardRef = doc(db, 'stores', params.storeId, 'billboards', params.billboardId);
     const billboardDoc = await getDoc(billboardRef);
 
-    if (billboardDoc.data()?.userId == userId) {
+    if (storeDoc.data()?.userId == userId) {
       deleteDoc(billboardRef);
     }
 

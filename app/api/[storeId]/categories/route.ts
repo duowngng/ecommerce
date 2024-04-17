@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
 import { collection, addDoc, serverTimestamp, getDoc, doc, getDocs, query } from "firebase/firestore"; 
 import { db } from "@/lib/firebase/firebase-config";
-import { Billboard } from "@/types/types";
+import { Billboard, Category } from "@/types/types";
 
 export async function POST(
   req: Request,
@@ -12,18 +12,18 @@ export async function POST(
     const { userId } = auth(); 
     const body = await req.json();
 
-    const { label, imageUrl } = body;
+    const { name, billboardId } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
     }
 
-    if (!label) {
-      return new NextResponse("Label is required", { status: 400 });
+    if (!name) {
+      return new NextResponse("Name is required", { status: 400 });
     }
 
-    if (!imageUrl) {
-      return new NextResponse("Image URL is required", { status: 400 });
+    if (!billboardId) {
+      return new NextResponse("Billboard id is required", { status: 400 });
     }
 
     if (!params.storeId) {
@@ -38,17 +38,16 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 403 });
     }
     
-    // Store the billboard in the database
-    const billboardRef = await addDoc(collection(db,"stores", params.storeId, "billboards"), {
-      label: label,
-      imageUrl: imageUrl,
+    const categoryRef = await addDoc(collection(db,"stores", params.storeId, "categories"), {
+      name: name,
+      billboardId: billboardId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
     // Return the response
-    return NextResponse.json(billboardRef);
+    return NextResponse.json(categoryRef);
   } catch (error) {
-    console.log('[BILLBOARDS_POST]', error);
+    console.log('[CATEGORIES_POST]', error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
@@ -64,23 +63,23 @@ export async function GET(
     
     const querySnapshot = await getDocs(
       query(
-        collection(db,"stores", params.storeId, "billboards")
+        collection(db,"stores", params.storeId, "categories")
       ));
   
-    const billboards: Billboard[] = []; 
+    const categories: Category[] = []; 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      billboards.push({ 
+      categories.push({ 
         ...data,
         id: doc.id, 
         createdAt: data.createdAt.toDate(),
         updatedAt: data.updatedAt.toDate()
-      } as Billboard);
+      } as Category);
     });
 
-    return NextResponse.json(billboards);
+    return NextResponse.json(categories);
   } catch (error) {
-    console.log('[BILLBOARDS_GET]', error);
+    console.log('[CATEGORIES_GET]', error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

@@ -3,7 +3,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { BillboardForm } from "./components/billboard-form";
 import { Billboard } from "@/types/types";
 
-const BillboardsPage = async ({
+const BillboardPage = async ({
   params
 }: {
   params: { billboardId: string, storeId: string}
@@ -26,4 +26,4 @@ const BillboardsPage = async ({
   );
 }
 
-export default BillboardsPage;
+export default BillboardPage;
