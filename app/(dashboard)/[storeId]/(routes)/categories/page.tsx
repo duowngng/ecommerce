@@ -5,7 +5,7 @@ import { db } from "@/lib/firebase/firebase-config";
 
 import { CategoryClient } from "./components/client";
 import { CategoryColumn } from "./components/columns";
-import { Billboard, Category } from "@/types/types";
+import { Category } from "@/types/types";
 
 const CategoriesPage = async ({
   params
@@ -29,7 +29,7 @@ const CategoriesPage = async ({
     } as Category);
   });
 
-  const formattedCategories = await Promise.all(categories.map(async (item) => {
+  const formattedCategories: CategoryColumn[] = await Promise.all(categories.map(async (item) => {
     const billboardRef = doc(db, 'stores', params.storeId, "billboards", item.billboardId);
     const billboardSnapshot = await getDoc(billboardRef);
   

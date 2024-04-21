@@ -42,9 +42,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   };
 
   const uploadFile = (file: File) => {
-    const fileName = new Date().getTime() + file.name;
-    const storageRef = ref(storage, 'images/' + fileName);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+  const fileName = new Date().getTime() + file.name;
+  const storageRef = ref(storage, 'images/' + fileName);
+  const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on('state_changed',
       (snapshot) => {
@@ -102,7 +102,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   return (
     <div>
       <div className="mb-4 flex items-center gap-4">
-        {value.map(url => (
+        {value.map((url) => (
           <div key={url} className="relative w-[200px] h-[200px] rounded-m overflow-hidden">
             <div className="z-10 absolute top-2 right-2">
               <Button 

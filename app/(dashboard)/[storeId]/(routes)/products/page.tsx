@@ -1,0 +1,68 @@
+import { format } from "date-fns";
+
+import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
+import { db } from "@/lib/firebase/firebase-config";
+import { formatter } from "@/lib/utils";
+
+import { ProductClient } from "./components/client";
+import { ProductColumn } from "./components/columns";
+import { Product } from "@/types/types";
+
+const ProductsPage = async ({
+  params
+}: {
+  params: { storeId: string }
+}) => {
+  const querySnapshot = await getDocs(
+    query(
+      collection(db,"stores", params.storeId, "products"),
+      orderBy("createdAt", "desc")
+    ));
+
+  const products: Product[] = []; 
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    products.push({ 
+      ...data,
+      id: doc.id, 
+      createdAt: data.createdAt.toDate(),
+      updatedAt: data.updatedAt.toDate()
+    } as Product);
+  });
+
+  const formattedProducts = await Promise.all(products.map(async (item) => {
+    const categoryRef = doc(db, 'stores', params.storeId, "categories", item.categoryId);
+    const categorySnapshot = await getDoc(categoryRef);
+    const categoryData = categorySnapshot.data();
+
+    const sizeRef = doc(db, 'stores', params.storeId, "sizes", item.sizeId);
+    const sizeSnapshot = await getDoc(sizeRef);
+    const sizeData = sizeSnapshot.data();
+
+    const colorRef = doc(db, 'stores', params.storeId, "colors", item.colorId);
+    const colorSnapshot = await getDoc(colorRef);
+    const colorData = colorSnapshot.data();
+
+    return {
+    id: item.id,
+    name: item.name,
+    isFeatured: item.isFeatured,
+    isArchived: item.isArchived,
+    price: formatter.format(item.price),
+    category: categoryData?.name,
+    size: sizeData?.name,
+    color: colorData?.name,
+    createdAt: format(item.createdAt, "MMMM do, yyyy")
+    };
+  }));
+
+  return ( 
+    <div className="flex-col">
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <ProductClient data={formattedProducts}/>
+      </div>
+    </div> 
+  );
+}
+
+export default ProductsPage;

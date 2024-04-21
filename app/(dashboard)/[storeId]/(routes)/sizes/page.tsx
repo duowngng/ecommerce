@@ -7,7 +7,7 @@ import { SizeClient } from "./components/client";
 import { SizeColumn } from "./components/columns";
 import { Size } from "@/types/types";
 
-const SizePage = async ({
+const SizesPage = async ({
   params
 }: {
   params: { storeId: string }
@@ -45,4 +45,4 @@ const SizePage = async ({
   );
 }
 
-export default SizePage;
+export default SizesPage;

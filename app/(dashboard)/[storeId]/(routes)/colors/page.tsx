@@ -3,46 +3,46 @@ import { format } from "date-fns";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase-config";
 
-import { BillboardClient } from "./components/client";
-import { BillboardColumn } from "./components/columns";
-import { Billboard } from "@/types/types";
+import { ColorClient } from "./components/client";
+import { ColorColumn } from "./components/columns";
+import { Color } from "@/types/types";
 
-const BillboardsPage = async ({
+const ColorsPage = async ({
   params
 }: {
   params: { storeId: string }
 }) => {
   const querySnapshot = await getDocs(
     query(
-      collection(db,"stores", params.storeId, "billboards"),
+      collection(db,"stores", params.storeId, "colors"),
       orderBy("createdAt", "desc")
     ));
 
-  const billboards: Billboard[] = []; 
+  const colors: Color[] = []; 
   querySnapshot.forEach((doc) => {
     const data = doc.data();
-    billboards.push({ 
+    colors.push({ 
       ...data,
       id: doc.id, 
       createdAt: data.createdAt.toDate(),
       updatedAt: data.updatedAt.toDate()
-    } as Billboard);
+    } as Color);
   });
 
-  const formattedBillboards: BillboardColumn[] = billboards.map((item) => ({
+  const formatedColors: ColorColumn[] = colors.map((item) => ({
     id: item.id,
-    label: item.label,
-    imageUrl: item.imageUrl,
+    name: item.name,
+    value: item.value,
     createdAt: format(item.createdAt, "MMMM do, yyyy")
   }))
 
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <BillboardClient data={formattedBillboards}/>
+        <ColorClient data={formatedColors}/>
       </div>
     </div> 
   );
 }
 
-export default BillboardsPage;
+export default ColorsPage;
