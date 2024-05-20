@@ -40,13 +40,22 @@ export interface Color {
 
 export interface Product {
   id: string;
-  categoryId: string;
+  category: {
+    id: string;
+    name: string;
+  };
   name: string;
   price: number;
   isFeatured: boolean;
   isArchived: boolean;
-  sizeId: string;
-  colorId: string;
+  size: {
+    id: string;
+    name: string;
+  };
+  color: {
+    id: string;
+    name: string;
+  };
   images: string[];
   createdAt: Date;
   updatedAt: Date;

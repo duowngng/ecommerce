@@ -31,27 +31,15 @@ const ProductsPage = async ({
   });
 
   const formattedProducts = await Promise.all(products.map(async (item) => {
-    const categoryRef = doc(db, 'stores', params.storeId, "categories", item.categoryId);
-    const categorySnapshot = await getDoc(categoryRef);
-    const categoryData = categorySnapshot.data();
-
-    const sizeRef = doc(db, 'stores', params.storeId, "sizes", item.sizeId);
-    const sizeSnapshot = await getDoc(sizeRef);
-    const sizeData = sizeSnapshot.data();
-
-    const colorRef = doc(db, 'stores', params.storeId, "colors", item.colorId);
-    const colorSnapshot = await getDoc(colorRef);
-    const colorData = colorSnapshot.data();
-
     return {
     id: item.id,
     name: item.name,
     isFeatured: item.isFeatured,
     isArchived: item.isArchived,
     price: formatter.format(item.price),
-    category: categoryData?.name,
-    size: sizeData?.name,
-    color: colorData?.name,
+    category: item.category.id,
+    size: item.size.name,
+    color: item.color.name,
     createdAt: format(item.createdAt, "MMMM do, yyyy")
     };
   }));

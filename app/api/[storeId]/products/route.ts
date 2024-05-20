@@ -63,18 +63,39 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 403 });
     }
     
+    const categoryDoc = await getDoc(doc(db, "stores", params.storeId, "categories", categoryId));
+    const colorDoc = await getDoc(doc(db, "stores", params.storeId, "colors", colorId));
+    const sizeDoc = await getDoc(doc(db, "stores", params.storeId, "sizes", sizeId));
+    
+    if (!categoryDoc.exists || !colorDoc.exists || !sizeDoc.exists) {
+      return new NextResponse("Invalid category, color, or size ID", { status: 400 });
+    }
+    
+    const categoryData = categoryDoc.data();
+    const colorData = colorDoc.data();
+    const sizeData = sizeDoc.data();
+
     // Store the product in the database
     const productRef = await addDoc(collection(db,"stores", params.storeId, "products"), {
       name,
       price,
-      categoryId,
-      sizeId,
-      colorId,
       isFeatured,
       isArchived,
       images,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      category: {
+        id: categoryId,
+        name: categoryData?.name,
+      },
+      color: {
+        id: colorId,
+        name: colorData?.name,
+      },
+      size: {
+        id: sizeId,
+        name: sizeData?.name,
+      }
     });
     // Return the response
     return NextResponse.json(productRef);

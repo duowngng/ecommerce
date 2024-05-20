@@ -3,7 +3,7 @@
 import * as z from "zod";
 import axios from "axios";
 import { useState } from "react";
-import { Category, Color, Image, Product, Size } from "@/types/types";
+import { Category, Color, Product, Size } from "@/types/types";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
