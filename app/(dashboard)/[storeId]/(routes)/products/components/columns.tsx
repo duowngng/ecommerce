@@ -46,10 +46,10 @@ export const columns: ColumnDef<ProductColumn>[] = [
     accessorKey: "color",
     header: "Color",
     cell: ({ row }) => (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center gap-2">
       {row.original.color}
       <div 
-        className="w-4 h-4 rounded-full" 
+        className="w-4 h-4 rounded-full border border-gray-600" 
         style={{ backgroundColor: row.original.color }}/>
     </div>
     )
