@@ -122,13 +122,15 @@ export async function GET(
 
     const queryConstraints = [where('isArchived', '==', false)];
     if (categoryId) {
-      queryConstraints.push(where('categoryId', '==', categoryId));
+      queryConstraints.push(where('category.id', '==', categoryId));
     }
+  
     if (colorId) {
-      queryConstraints.push(where('colorId', '==', colorId));
+      queryConstraints.push(where('color.id', '==', colorId));
     }
+  
     if (sizeId) {
-      queryConstraints.push(where('sizeId', '==', sizeId));
+      queryConstraints.push(where('size.id', '==', sizeId));
     }
     if (isFeatured === 'true') {
       queryConstraints.push(where('isFeatured', '==', true));
