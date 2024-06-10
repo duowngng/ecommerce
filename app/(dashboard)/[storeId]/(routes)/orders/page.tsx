@@ -34,10 +34,10 @@ const OrdersPage = async ({
     const products = []
 
     for (let i = 0; i < item.orderItems.length; i++) {
-    const productRef = doc(db, 'stores', params.storeId, "products", item.orderItems[i]);
-    const productSnapshot = await getDoc(productRef);
-    const productData = productSnapshot.data();
-    products.push(productData);
+      const productRef = doc(db, 'stores', params.storeId, "products", item.orderItems[i].product.connect.id);
+      const productSnapshot = await getDoc(productRef);
+      const productData = productSnapshot.data();
+      products.push(productData);
     }
 
     const productNames = products.map((product) => product?.name).join(', ');

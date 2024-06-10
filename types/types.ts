@@ -63,7 +63,7 @@ export interface Product {
 
 export interface Order {
   id: string;
-  orderItems: string[]
+  orderItems: any[]
   isPaid: boolean;
   phone: string;
   address: string;
