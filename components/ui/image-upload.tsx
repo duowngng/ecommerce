@@ -24,15 +24,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   value
 }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [img, setImg] = useState<File | undefined>(undefined);
+  const [img, setImg] = useState<File | null>(null);
 
   useEffect(() => {
       setIsMounted(true);
   }, []);
-
-  useEffect(() => {
-    img && uploadFile(img);
-  }, [img]);
 
   const handleClick = () => {
     const fileInput = document.getElementById("imageInput");
@@ -87,11 +83,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     );
   }
 
+  useEffect(() => {
+    img && uploadFile(img);
+  }, [img]);
+
   const onUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setImg(file);
-      };
+    setImg(event.target.files?.[0] || null);
   };
   
 
