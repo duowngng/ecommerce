@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase-config";
 import { Store } from "@/types/types";
+import { ThemeToggle } from "./theme-toggle";
 const Navbar = async () => {
   const { userId } = auth();
 
@@ -35,6 +36,7 @@ const Navbar = async () => {
         <StoreSwitcher items={stores}/>
         <MainNav className="mx-6"/>
         <div className="ml-auto flex items-center space-x-4">
+          <ThemeToggle />
           <UserButton />
         </div>
       </div>
