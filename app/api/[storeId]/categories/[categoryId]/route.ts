@@ -14,8 +14,12 @@ export async function GET (
 
     const categoryRef = doc(db, 'stores', params.storeId, 'categories', params.categoryId);
     const categoryDoc = await getDoc(categoryRef);
+    const categoryData = categoryDoc.data();
 
-    return NextResponse.json(categoryDoc.data());
+    return NextResponse.json({
+      ...categoryData,
+      id: categoryDoc.id,
+    });
   } catch (error) {
     console.log('[CATEGORY_GET]', error);
     return new NextResponse("Internal error", { status: 500 });

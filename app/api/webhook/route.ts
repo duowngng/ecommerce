@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
-  console.log(session);
+
   const address = session?.customer_details?.address;
 
   const addressComponents = [
@@ -37,12 +37,15 @@ export async function POST(req: Request) {
   const addressString = addressComponents.filter((c) => c !== null).join(', ');
 
   if (event.type === "checkout.session.completed") {
+    const orderId = session?.metadata?.orderId || "";
+    const storeId = session?.metadata?.storeId || "";
+
     const orderRef = doc(
       db,
       "stores",
-      session?.metadata?.storeId || "",
+      storeId,
       "orders",
-      session?.metadata?.orderId || ""
+      orderId
     );
     const orderDoc = await getDoc(orderRef);
     const orderData = orderDoc.data();
@@ -54,13 +57,27 @@ export async function POST(req: Request) {
       phone: session?.customer_details?.phone || "",
     });
 
-    const productIds = orderData?.orderItems.map((orderItem: any) => orderItem.product.connect.id);
 
-    for (const productId of productIds) {
-      await updateDoc(doc(db, "stores", session?.metadata?.storeId || "", "products", productId), {
-        isArchived: true,
-      })
-    };
+    for (const orderItem of orderData?.orderItems) {
+
+      const productRef = doc(
+        db,
+        "stores",
+        storeId,
+        "products",
+        orderItem.product.id
+      );
+      const productDoc = await getDoc(productRef);
+      const productData = productDoc.data();
+
+      const newQuantity = productData?.quantity - orderItem.quantity;
+
+      await updateDoc(productRef, {
+        quantity: newQuantity,
+        isArchived: newQuantity === 0,
+        isFeatured: newQuantity > 0,
+      });
+    } 
   }
 
   return new NextResponse(null, { status: 200 });

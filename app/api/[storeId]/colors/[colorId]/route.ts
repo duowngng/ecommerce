@@ -14,8 +14,12 @@ export async function GET (
 
     const colorRef = doc(db, 'stores', params.storeId, 'colors', params.colorId);
     const colorDoc = await getDoc(colorRef);
+    const colorData = colorDoc.data();
 
-    return NextResponse.json(colorDoc.data());
+    return NextResponse.json({
+      ...colorData,
+      id: colorDoc.id,
+    });
   } catch (error) {
     console.log('[COLOR_GET]', error);
     return new NextResponse("Internal error", { status: 500 });

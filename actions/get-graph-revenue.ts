@@ -18,7 +18,7 @@ export const getGraphRevenue = async (storeId: string) => {
     let revenueForOrder = 0;
 
     for (const item of orderData.orderItems) {
-      const productDoc = await getDoc(doc(db, "stores", storeId, "products", item.product.connect.id));
+      const productDoc = await getDoc(doc(db, "stores", storeId, "products", item.product.id));
       const productData = productDoc.data();
       revenueForOrder += productData?.price || 0;
     }

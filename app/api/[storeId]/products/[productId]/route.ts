@@ -14,8 +14,12 @@ export async function GET (
 
     const productRef = doc(db, 'stores', params.storeId, 'products', params.productId);
     const productDoc = await getDoc(productRef);
+    const productData = productDoc.data();
 
-    return NextResponse.json(productDoc.data());
+    return NextResponse.json({
+      ...productData,
+      id: productDoc.id,
+    });
   } catch (error) {
     console.log('[PRODUCT_GET]', error);
     return new NextResponse("Internal error", { status: 500 });
@@ -32,6 +36,7 @@ export async function PATCH (
 
     const { 
       name,
+      quantity,
       price,
       categoryId,
       sizeId,
@@ -51,6 +56,10 @@ export async function PATCH (
 
     if (!images || !images.length) {
       return new NextResponse("Images are required", { status: 400 });
+    }
+
+    if (!quantity) {
+      return new NextResponse("Quantity is required", { status: 400 });
     }
 
     if (!price) {
@@ -89,6 +98,7 @@ export async function PATCH (
       await updateDoc(productRef, { 
       ...productData,
       name,
+      quantity,
       price,
       categoryId,
       sizeId,

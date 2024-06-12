@@ -14,8 +14,12 @@ export async function GET (
 
     const billboardRef = doc(db, 'stores', params.storeId, 'billboards', params.billboardId);
     const billboardDoc = await getDoc(billboardRef);
+    const billboardData = billboardDoc.data();
 
-    return NextResponse.json(billboardDoc.data());
+    return NextResponse.json({
+      ...billboardData,
+      id: billboardDoc.id,
+    });
   } catch (error) {
     console.log('[BILLBOARD_GET]', error);
     return new NextResponse("Internal error", { status: 500 });

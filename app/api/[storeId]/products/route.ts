@@ -14,6 +14,7 @@ export async function POST(
 
     const { 
       name,
+      quantity,
       price,
       categoryId,
       sizeId,
@@ -33,6 +34,10 @@ export async function POST(
 
     if (!images || !images.length) {
       return new NextResponse("Images are required", { status: 400 });
+    }
+
+    if (!quantity) {
+      return new NextResponse("Quantity is required", { status: 400 });
     }
 
     if (!price) {
@@ -78,6 +83,7 @@ export async function POST(
     // Store the product in the database
     const productRef = await addDoc(collection(db,"stores", params.storeId, "products"), {
       name,
+      quantity,
       price,
       isFeatured,
       isArchived,

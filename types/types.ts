@@ -46,6 +46,7 @@ export interface Product {
   };
   name: string;
   price: number;
+  quantity: number;
   isFeatured: boolean;
   isArchived: boolean;
   size: {
@@ -59,6 +60,11 @@ export interface Product {
   images: string[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
 }
 
 export interface Order {

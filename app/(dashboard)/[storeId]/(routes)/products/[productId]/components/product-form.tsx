@@ -31,6 +31,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 const formSchema = z.object({
   name: z.string().min(1),
   images: z.string().array(),
+  quantity: z.coerce.number().min(0),
   price: z.coerce.number().min(1),
   categoryId: z.string().min(1),
   colorId: z.string().min(1),
@@ -72,6 +73,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     defaultValues: initialData || {
       name: "",
       images: [],
+      quantity: 0,
       price: 0,
       categoryId: "",
       colorId: "",
@@ -168,6 +170,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   <FormLabel>Product name</FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder="Product label" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <Input type="number" disabled={loading} placeholder="10" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

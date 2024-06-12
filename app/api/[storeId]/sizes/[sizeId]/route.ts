@@ -14,8 +14,12 @@ export async function GET (
 
     const sizeRef = doc(db, 'stores', params.storeId, 'sizes', params.sizeId);
     const sizeDoc = await getDoc(sizeRef);
+    const sizeData = sizeDoc.data();
 
-    return NextResponse.json(sizeDoc.data());
+    return NextResponse.json({
+      ...sizeData,
+      id: sizeDoc.id,
+    });
   } catch (error) {
     console.log('[SIZE_GET]', error);
     return new NextResponse("Internal error", { status: 500 });

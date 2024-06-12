@@ -2,9 +2,8 @@ import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
 import { stripe } from "@/lib/stripe";
-import { collection, addDoc, serverTimestamp, getDoc, doc, getDocs, query, where } from "firebase/firestore"; 
+import { collection, addDoc, serverTimestamp, getDoc, doc } from "firebase/firestore"; 
 import { db } from "@/lib/firebase/firebase-config";
-import { url } from "inspector";
 
 const corsHeader ={
   "Access-Control-Allow-Origin": "*",
@@ -20,21 +19,23 @@ export async function POST(
   req: Request,
   { params }: { params: { storeId: string } }
 ) {
-  const { productIds } = await req.json();
+  const { items } = await req.json();
 
-  if (!productIds ||  productIds.length === 0) {
-    return new NextResponse("Product ids are required", { status: 400 });
+  if (!items || items.length === 0) {
+    return new NextResponse("Cart items are required", { status: 400 });
   }
 
 
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
-  for (const productId of productIds) {
-    const productDoc = await getDoc(doc(db, "stores", params.storeId, "products", productId));
+  for (const item of items) {
+    const productDoc = await getDoc(
+      doc(db, "stores", params.storeId, "products", item.product.id)
+    );
     const productData = productDoc.data();
 
     line_items.push({
-      quantity: 1,
+      quantity: item.quantity,
       price_data: {
         currency: 'USD',
         product_data: {
@@ -48,14 +49,7 @@ export async function POST(
   const order = await addDoc(collection(db, "stores", params.storeId, "orders"), {
     storeId: params.storeId,
     isPaid: false,
-    orderItems: 
-      productIds.map((productId: string) => ({
-        product: {
-          connect: {
-            id: productId,
-          }
-        }
-      })),
+    orderItems: items,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });

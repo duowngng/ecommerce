@@ -9,9 +9,9 @@ export const getTotalRevenue = async (storeId: string) => {
     const prevTotal = await prevTotalPromise;
     const orderData = order.data();
     
-    const orderTotal = await orderData.orderItems.reduce(async (orderSum: any, item: { product: { connect: { id: any; }; }; }) => {
+    const orderTotal = await orderData.orderItems.reduce(async (orderSum: any, item: { product: { id: any; }; }) => {
       const prevOrderItemSum = await orderSum; 
-      const productId = item.product.connect.id;
+      const productId = item.product.id;
       const productDoc = await getDoc(doc(db, "stores", storeId, "products", productId));
       const productData = productDoc.data();
       return prevOrderItemSum + productData?.price || 0;
