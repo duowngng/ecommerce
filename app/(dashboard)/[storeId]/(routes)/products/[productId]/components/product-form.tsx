@@ -70,17 +70,24 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      name: "",
-      images: [],
-      quantity: 0,
-      price: 0,
-      categoryId: "",
-      colorId: "",
-      sizeId: "",
-      isFeatured: false,
-      isArchived: false,
-    },
+    defaultValues: initialData 
+      ? {
+          ...initialData,
+          categoryId: initialData.category.id, 
+          colorId: initialData.color.id,
+          sizeId: initialData.size.id
+        }
+      : {
+          name: "",
+          images: [],
+          quantity: 0,
+          price: 0,
+          categoryId: "",
+          colorId: "",
+          sizeId: "",
+          isFeatured: false,
+          isArchived: false,
+        },
   });
 
   const onSubmit = async (data: ProductFormValues) => {
