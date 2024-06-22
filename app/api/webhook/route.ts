@@ -75,7 +75,6 @@ export async function POST(req: Request) {
       await updateDoc(productRef, {
         quantity: newQuantity,
         isArchived: newQuantity === 0,
-        isFeatured: newQuantity > 0,
       });
     } 
   }

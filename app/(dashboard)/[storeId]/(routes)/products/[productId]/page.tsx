@@ -49,6 +49,15 @@ const ProductPage = async ({
     } as Size);
   });
 
+  const numericSizes = sizes.filter(size => !isNaN(parseFloat(size.name)));
+  const nonNumericSizes = sizes.filter(size => isNaN(parseFloat(size.name)));
+  
+  numericSizes.sort((a, b) => parseFloat(a.name) - parseFloat(b.name));
+  
+  nonNumericSizes.sort((a, b) => b.name.localeCompare(a.name));
+  
+  const sortedSizes = [...nonNumericSizes, ...numericSizes];
+
   const colorSnapshot = await getDocs(
     query(
       collection(db,"stores", params.storeId, "colors")
@@ -70,7 +79,7 @@ const ProductPage = async ({
       <div className="flex-1 space-y-4 p-8 pt-6">
         <ProductForm 
           categories={categories}
-          sizes={sizes}
+          sizes={sortedSizes}
           colors={colors}
           initialData={product}
         />

@@ -90,6 +90,18 @@ export async function PATCH (
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
+    const categoryDoc = await getDoc(doc(db, "stores", params.storeId, "categories", categoryId));
+    const colorDoc = await getDoc(doc(db, "stores", params.storeId, "colors", colorId));
+    const sizeDoc = await getDoc(doc(db, "stores", params.storeId, "sizes", sizeId));
+    
+    if (!categoryDoc.exists || !colorDoc.exists || !sizeDoc.exists) {
+      return new NextResponse("Invalid category, color, or size ID", { status: 400 });
+    }
+    
+    const categoryData = categoryDoc.data();
+    const colorData = colorDoc.data();
+    const sizeData = sizeDoc.data();
+
     const productRef = doc(db, 'stores', params.storeId, 'products', params.productId);
     const productDoc = await getDoc(productRef);
     const productData = productDoc.data();
@@ -100,9 +112,18 @@ export async function PATCH (
       name,
       quantity,
       price,
-      categoryId,
-      sizeId,
-      colorId,
+      category: {
+        id: categoryId,
+        name: categoryData?.name,
+      },
+      color: {
+        id: colorId,
+        name: colorData?.name,
+      },
+      size: {
+        id: sizeId,
+        name: sizeData?.name,
+      },
       isFeatured,
       isArchived,
       images,
